@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvacedFacebook", "AdvacedFacebook\AdvacedFacebook.csproj", "{28722EE1-5D7B-4C2E-ABA6-9904B11E12FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdavacedFacebookTest", "AdavacedFacebookTest\AdavacedFacebookTest.csproj", "{C23C1066-C673-4F2A-B8E5-634BFDD480EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{28722EE1-5D7B-4C2E-ABA6-9904B11E12FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28722EE1-5D7B-4C2E-ABA6-9904B11E12FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28722EE1-5D7B-4C2E-ABA6-9904B11E12FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28722EE1-5D7B-4C2E-ABA6-9904B11E12FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C23C1066-C673-4F2A-B8E5-634BFDD480EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C23C1066-C673-4F2A-B8E5-634BFDD480EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C23C1066-C673-4F2A-B8E5-634BFDD480EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C23C1066-C673-4F2A-B8E5-634BFDD480EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {443CAFFF-B30B-462E-A180-36F38C04533A}
+	EndGlobalSection
+EndGlobal
