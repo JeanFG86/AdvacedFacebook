@@ -3,8 +3,5 @@ using AdvacedFacebook.src.Domain.Models;
 
 namespace AdvacedFacebook.src.Domain.Features
 {
-    public abstract class FacebookAuthenticationResult
-    {
-        public Tuple<IAccessToken?, AuthenticationError?>? Result { get; set; }
-    }
+    public record FacebookAuthenticationResult(Tuple<IAccessToken?, AuthenticationError?>? Result);
 }

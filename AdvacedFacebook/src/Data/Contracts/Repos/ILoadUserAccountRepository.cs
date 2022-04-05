@@ -2,6 +2,6 @@
 {
     public interface ILoadUserAccountRepository
     {
-        Task Load(string email);
+        Task<string> Load(string email);
     }
 }
