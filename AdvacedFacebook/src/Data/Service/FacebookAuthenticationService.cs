@@ -2,6 +2,7 @@
 using AdvacedFacebook.src.Data.Contracts.Repos;
 using AdvacedFacebook.src.Domain.Error;
 using AdvacedFacebook.src.Domain.Features;
+using AdvacedFacebook.src.Domain.Models;
 
 namespace AdvacedFacebook.src.Data.Service
 {
@@ -9,15 +10,15 @@ namespace AdvacedFacebook.src.Data.Service
     {
         private readonly ILoadFacebookUserApi facebookApi;
         private readonly ILoadUserAccountRepository loadUserAccountRepo;
-        private readonly ICreateFacebookAccountRepository createUserAccountRepo;
+        private readonly ISaveFacebookRepository saveUserAccountRepo;
 
         public FacebookAuthenticationService(ILoadFacebookUserApi facebookApi, 
-            ILoadUserAccountRepository loadUserAccountRepo, 
-            ICreateFacebookAccountRepository createUserAccountRepo)
+            ILoadUserAccountRepository loadUserAccountRepo,
+            ISaveFacebookRepository saveUserAccountRepo)
         {
             this.facebookApi = facebookApi;
             this.loadUserAccountRepo = loadUserAccountRepo;
-            this.createUserAccountRepo = createUserAccountRepo;
+            this.saveUserAccountRepo = saveUserAccountRepo;
         }
 
         public async Task<AuthenticationError> Perform(string token)
@@ -25,8 +26,9 @@ namespace AdvacedFacebook.src.Data.Service
             var fbData = await facebookApi.LoadUser(token);
             if(fbData != null)
             {
-                await loadUserAccountRepo.Load(fbData.Email);
-                await createUserAccountRepo.CreateFromFacebook(fbData.Email, fbData.Name, fbData.FacebookId);
+                var accountData = await this.loadUserAccountRepo.Load(fbData.Email);
+                var fbAccount = new FacebookAccount(fbData, accountData);
+                await saveUserAccountRepo.SaveWithFacebook(new ISaveFacebookRepositoryParams(null, fbAccount.Email, fbAccount.Name, fbAccount .FacebookId));
             }
 
             return new AuthenticationError();

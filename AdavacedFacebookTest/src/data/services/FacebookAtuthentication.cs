@@ -2,6 +2,7 @@
 using AdvacedFacebook.src.Data.Contracts.Repos;
 using AdvacedFacebook.src.Data.Service;
 using AdvacedFacebook.src.Domain.Error;
+using AdvacedFacebook.src.Domain.Models;
 using Moq;
 using System.Threading.Tasks;
 using Xunit;
@@ -13,14 +14,14 @@ namespace AdavacedFacebookTest.src.data.services
     {
         private static void CreateMocks(out Mock<ILoadFacebookUserApi> facebookApi,
             out Mock<ILoadUserAccountRepository> loadAccount,
-            out Mock<ICreateFacebookAccountRepository> createAccount,
+            out Mock<ISaveFacebookRepository> saveAccount,
             out FacebookAuthenticationService sut, 
             out string token)
         {
             facebookApi = new Mock<ILoadFacebookUserApi>();
             loadAccount = new Mock<ILoadUserAccountRepository>();
-            createAccount = new Mock<ICreateFacebookAccountRepository>();
-            sut = new FacebookAuthenticationService(facebookApi.Object, loadAccount.Object, createAccount.Object);
+            saveAccount = new Mock<ISaveFacebookRepository>();
+            sut = new FacebookAuthenticationService(facebookApi.Object, loadAccount.Object, saveAccount.Object);
             token = "any_token";
         }
 
@@ -29,10 +30,10 @@ namespace AdavacedFacebookTest.src.data.services
         {
             Mock<ILoadFacebookUserApi> facebookApi;
             Mock<ILoadUserAccountRepository> loadAccount;
-            Mock<ICreateFacebookAccountRepository> createAccount;
+            Mock<ISaveFacebookRepository> saveAccount;
             FacebookAuthenticationService sut;
             string token;
-            CreateMocks(out facebookApi, out loadAccount, out createAccount, out sut, out token);
+            CreateMocks(out facebookApi, out loadAccount, out saveAccount, out sut, out token);
 
             await sut.Perform(token);
 
@@ -44,10 +45,10 @@ namespace AdavacedFacebookTest.src.data.services
         {
             Mock<ILoadFacebookUserApi> facebookApi;
             Mock<ILoadUserAccountRepository> loadAccount;
-            Mock<ICreateFacebookAccountRepository> createAccount;
+            Mock<ISaveFacebookRepository> saveAccount;
             FacebookAuthenticationService sut;
             string token;
-            CreateMocks(out facebookApi, out loadAccount, out createAccount, out sut, out token);
+            CreateMocks(out facebookApi, out loadAccount, out saveAccount, out sut, out token);
 
             var returns = await sut.Perform(token);
 
@@ -59,12 +60,17 @@ namespace AdavacedFacebookTest.src.data.services
         {
             Mock<ILoadFacebookUserApi> facebookApi;
             Mock<ILoadUserAccountRepository> loadAccount;
-            Mock<ICreateFacebookAccountRepository> createAccount;
+            Mock<ISaveFacebookRepository> saveAccount;
             FacebookAuthenticationService sut;
             string token;
-            CreateMocks(out facebookApi, out loadAccount, out createAccount, out sut, out token);
-            
-            facebookApi.Setup(x => x.LoadUser(token)).ReturnsAsync(new LoadFacebookUserApiResult("any_fb_id", "any_fb_name", "any_fb_email"));
+            CreateMocks(out facebookApi, out loadAccount, out saveAccount, out sut, out token);
+
+            var aCord = new Mock<IFacebookData>();
+            aCord.SetupGet(c => c.Email).Returns("any_fb_email");
+            aCord.SetupGet(c => c.FacebookId).Returns("any_fb_id");
+            aCord.SetupGet(c => c.Name).Returns("any_fb_name");
+
+            facebookApi.Setup(x => x.LoadUser(token)).ReturnsAsync(aCord.Object);
             await sut.Perform(token);
             loadAccount.Verify(x => x.Load("any_fb_email"), Times.Once());
         }
@@ -74,15 +80,50 @@ namespace AdavacedFacebookTest.src.data.services
         {
             Mock<ILoadFacebookUserApi> facebookApi;
             Mock<ILoadUserAccountRepository> loadAccount;
-            Mock<ICreateFacebookAccountRepository> createAccount;
+            Mock<ISaveFacebookRepository> saveAccount;
             FacebookAuthenticationService sut;
             string token;
-            CreateMocks(out facebookApi, out loadAccount, out createAccount, out sut, out token);
+            CreateMocks(out facebookApi, out loadAccount, out saveAccount, out sut, out token);
 
-            loadAccount.Setup(x => x.Load("any_fb_email")).ReturnsAsync("");
-            facebookApi.Setup(x => x.LoadUser(token)).ReturnsAsync(new LoadFacebookUserApiResult("any_fb_id", "any_fb_name", "any_fb_email"));
+            var aCord = new Mock<IFacebookData>();
+            aCord.SetupGet(c => c.Email).Returns("any_fb_email");
+            aCord.SetupGet(c => c.FacebookId).Returns("any_fb_id");
+            aCord.SetupGet(c => c.Name).Returns("any_fb_name");
+
+            facebookApi.Setup(x => x.LoadUser(token)).ReturnsAsync(aCord.Object);
             await sut.Perform(token);
-            createAccount.Verify(x => x.CreateFromFacebook("any_fb_email", "any_fb_name", "any_fb_id"), Times.Once());
+
+            //var aCordParams = new Mock<ISaveFacebookRepositoryParams>();
+            //aCordParams.SetupGet(c => c.Email).Returns("any_fb_email");
+            //aCordParams.SetupGet(c => c.FacebookId).Returns("any_fb_id");
+            //aCordParams.SetupGet(c => c.Name).Returns("any_fb_name");
+
+            saveAccount.Verify(x => x.SaveWithFacebook(new ISaveFacebookRepositoryParams(null, "any_fb_email", "any_fb_name", "any_fb_id")), Times.Once());
+
+            //Mock<ILoadFacebookUserApi> facebookApi;
+            //Mock<ILoadUserAccountRepository> loadAccount;
+            //Mock<ISaveFacebookRepository> saveAccount;
+            //FacebookAuthenticationService sut;
+            //string token;
+            //CreateMocks(out facebookApi, out loadAccount, out saveAccount, out sut, out token);
+
+            //var aCord = new Mock<IAccountData>();
+            ////aCord.SetupGet(c => c.Name).Returns("");
+
+            //var aCordFb = new Mock<IFacebookData>();
+            //aCordFb.SetupGet(c => c.Email).Returns("any_fb_email");
+            //aCordFb.SetupGet(c => c.FacebookId).Returns("any_fb_id");
+            //aCordFb.SetupGet(c => c.Name).Returns("any_fb_name");
+
+            //var aCordParams = new Mock<ISaveFacebookRepositoryParams>();
+            //aCordParams.SetupGet(c => c.Email).Returns("any_fb_email");
+            //aCordParams.SetupGet(c => c.FacebookId).Returns("any_fb_id");
+            //aCordParams.SetupGet(c => c.Name).Returns("any_fb_name");
+
+            //loadAccount.SetupSequence(x => x.Load("any_fb_email")).ReturnsAsync(aCord.Object);
+            //facebookApi.Setup(x => x.LoadUser(token)).ReturnsAsync(aCordFb.Object);
+            //await sut.Perform(token);
+            //saveAccount.Verify(x => x.SaveWithFacebook(aCordParams.Object), Times.Once());
         }
     }
 }

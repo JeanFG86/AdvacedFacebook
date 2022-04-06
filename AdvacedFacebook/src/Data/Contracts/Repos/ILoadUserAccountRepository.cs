@@ -1,7 +1,9 @@
-﻿namespace AdvacedFacebook.src.Data.Contracts.Repos
+﻿using AdvacedFacebook.src.Domain.Models;
+
+namespace AdvacedFacebook.src.Data.Contracts.Repos
 {
     public interface ILoadUserAccountRepository
     {
-        Task<string> Load(string email);
+        Task<IAccountData> Load(string email);
     }
 }

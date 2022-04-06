@@ -1,7 +1,9 @@
-﻿namespace AdvacedFacebook.src.Data.Contracts.Apis
+﻿using AdvacedFacebook.src.Domain.Models;
+
+namespace AdvacedFacebook.src.Data.Contracts.Apis
 {
     public interface ILoadFacebookUserApi
     {
-        Task<LoadFacebookUserApiResult> LoadUser(string token);
+        Task<IFacebookData> LoadUser(string token);
     }
 }
