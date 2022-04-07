@@ -28,7 +28,7 @@ namespace AdvacedFacebook.src.Data.Service
             {
                 var accountData = await this.loadUserAccountRepo.Load(fbData.Email);
                 var fbAccount = new FacebookAccount(fbData, accountData);
-                await saveUserAccountRepo.SaveWithFacebook(new ISaveFacebookRepositoryParams(null, fbAccount.Email, fbAccount.Name, fbAccount .FacebookId));
+                await saveUserAccountRepo.SaveWithFacebook(new ISaveFacebookRepositoryParams(fbAccount.Id, fbAccount.Email, fbAccount.Name, fbAccount .FacebookId));
             }
 
             return new AuthenticationError();
