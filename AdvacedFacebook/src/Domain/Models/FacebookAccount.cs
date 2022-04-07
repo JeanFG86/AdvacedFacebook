@@ -7,7 +7,7 @@
         public string Email { get; private set; }
         public string FacebookId { get; private set; }
 
-        public FacebookAccount(IFacebookData facebokData, IAccountData? accountData)
+        public FacebookAccount(IFacebookData facebokData, IAccountData? accountData = null)
         {
             Id = accountData?.Id;
             Name = accountData?.Name ?? facebokData.Name;
